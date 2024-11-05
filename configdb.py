@@ -4,9 +4,13 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 password=os.getenv('PASSWORD')
+username=os.getenv('USER')
+hostname=os.getenv('HOST')
+database=os.getenv('DATABASE')
 DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',
+    'host': hostname,
+    'user': username,
     'password': password,
-    'database': 'placement_db'
+    'database': database,
+    # 'port' : <port_no> if a specific port is needed 
 }
