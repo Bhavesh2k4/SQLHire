@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 password=os.getenv('PASSWORD')
-username=os.getenv('USER')
+username="root"
 hostname=os.getenv('HOST')
 database=os.getenv('DATABASE')
 DB_CONFIG = {
