@@ -21,6 +21,8 @@ placement-management-system/
 |-- configdb.py                 # Database configuration
 ```
 
+NOTE : A new user with role 'admin' , username = 'admin' and password='admin123' is created when the project is initialized for the first time ( use that to login )
+
 ## Setup Instructions
 1. **Technologies Used**
      ```
