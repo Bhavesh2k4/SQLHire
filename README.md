@@ -1,6 +1,8 @@
 # SQLHire
 SQLHire is a simple DBMS + web-based application built with MySQL and Python-Streamlit, designed as a replica of a placement and internship platform.(Built as a Mini-Project for my semester 5 DBMS course)
 
+### website : https://sqlhire.streamlit.app/
+
 ```plaintext
 placement-management-system/
 |-- auth/
