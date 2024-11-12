@@ -1,7 +1,10 @@
+import pymysql.cursors
 import streamlit as st
 from db.queries import get_database_connection
 from notifications.email import send_application_status_email
 from mysql.connector import Error
+import pymysql
+from pymysql import MySQLError
 
 def manage_company_profile():
     st.subheader("Company Details")
@@ -10,7 +13,7 @@ def manage_company_profile():
     
     try:
         conn = get_database_connection()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
 
         # Fetch existing details based on the user_id
         cursor.execute("SELECT * FROM Companies WHERE user_id = %s", (st.session_state.user_id,))
@@ -42,7 +45,7 @@ def manage_company_profile():
             conn.commit()
             st.success("Company profile updated successfully!")
 
-    except Error as e:
+    except MySQLError as e:
         st.error(f"Database error: {str(e)}")
     finally:
         if cursor:
@@ -58,7 +61,7 @@ def post_job():
     
     try:
         conn = get_database_connection()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
 
         # Get company ID
         cursor.execute("SELECT company_id FROM Companies WHERE user_id = %s", 
@@ -109,7 +112,7 @@ def post_job():
                 conn.commit()
                 st.success("Job posted successfully!")
     
-    except Error as e:
+    except MySQLError as e:
         st.error(f"Database error: {str(e)}")
     finally:
         if cursor:
@@ -126,7 +129,7 @@ def manage_applications():
     
     try:
         conn = get_database_connection()
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
 
         # Get company ID
         cursor.execute("SELECT company_id FROM Companies WHERE user_id = %s", 
@@ -190,7 +193,7 @@ def manage_applications():
                     )
                     st.success(f"Status updated to {new_status}!")
 
-    except Error as e:
+    except MySQLError as e:
         st.error(f"Database error: {str(e)}")
     finally:
         if cursor:
