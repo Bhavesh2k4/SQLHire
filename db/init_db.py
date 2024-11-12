@@ -1,5 +1,5 @@
-import mysql.connector
-from mysql.connector import Error
+import pymysql
+from pymysql import MySQLError
 from configdb import DB_CONFIG
 
 DB_INIT_TABLES = """
@@ -69,20 +69,31 @@ CREATE TABLE IF NOT EXISTS Student_Skills (
 """
 
 def init_database():
+    conn = None
     try:
-        conn = mysql.connector.connect(**DB_CONFIG)
-        if conn.is_connected():
+        # Establish connection using pymysql
+        conn = pymysql.connect(**DB_CONFIG)
+        
+        if conn.open:
             print("Connected to MySQL database.")
+
         cursor = conn.cursor()
+        
+        # Execute each statement in DB_INIT_TABLES
         for statement in DB_INIT_TABLES.split(';'):
-            if statement.strip():
+            if statement.strip():  # Avoid executing empty statements
                 cursor.execute(statement)
+        
+        # Commit all executed statements
         conn.commit()
         print("Database and tables initialized.")
-    except Error as e:
+        
+    except MySQLError as e:
         print(f"Error initializing database: {e}")
+    
     finally:
-        if conn.is_connected():
+        # Ensure the cursor and connection are closed if initialized
+        if conn and conn.open:
             cursor.close()
             conn.close()
 
