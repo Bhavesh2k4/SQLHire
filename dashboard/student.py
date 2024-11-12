@@ -2,11 +2,13 @@ import streamlit as st
 from db.queries import get_database_connection
 import pandas as pd
 from mysql.connector import Error
+import pymysql
+from pymysql import MySQLError
 
 def manage_profile():
     st.subheader("Personal Details")
     conn = get_database_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
 
     # Fetch existing details based on the user_id
     cursor.execute("SELECT * FROM Students WHERE user_id = %s", (st.session_state.user_id,))
@@ -34,7 +36,6 @@ def manage_profile():
         conn.commit()
         st.success("Profile updated successfully.")
 
-
     cursor.close()
     conn.close()
 
@@ -48,7 +49,7 @@ def manage_skills():
         return
         
     try:
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
         
         # Get student_id using user_id
         cursor.execute("SELECT student_id FROM Students WHERE user_id = %s", (st.session_state.user['user_id'],))
@@ -142,7 +143,7 @@ def manage_skills():
                     st.experimental_rerun()
                 except Error as e:
                     st.error(f"Error adding skills: {e}")
-    except Error as e:
+    except MySQLError as e:
         st.error(f"Database error: {e}")
     finally:
         cursor.close()
@@ -151,7 +152,7 @@ def manage_skills():
 def view_jobs():
     st.subheader("Available Jobs")
     conn = get_database_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
     cursor.execute("SELECT student_id FROM Students WHERE user_id = %s", (st.session_state.user['user_id'],))
     student_data = cursor.fetchone()
         
@@ -175,7 +176,7 @@ def view_jobs():
 def view_applications():
     st.subheader("Application Status")
     conn = get_database_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
     cursor.execute("SELECT student_id FROM Students WHERE user_id = %s", (st.session_state.user['user_id'],))
     student_data = cursor.fetchone()
         
