@@ -50,6 +50,7 @@ NOTE : A new user with role 'admin' , username = 'admin' and password='admin123'
      HOST=<your_database_host> #ex localhost if you are running it locally
      USER=<your_database_user> #ex root
      DATABASE=<your_database_password> #ex placement_db
+     PORT=<port num> ex24287
      ```
 
 4. **Run the Application**
