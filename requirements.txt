@@ -2,3 +2,5 @@ streamlit
 mysql-connector-python
 bcrypt
 python-dotenv
+pymysql
+
