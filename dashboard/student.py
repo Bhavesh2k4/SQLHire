@@ -27,13 +27,13 @@ def manage_profile():
 
     if st.button("Update Profile"):
         cursor.execute("""
-            INSERT INTO Students (user_id, first_name, last_name, email, phone, cgpa, graduation_year, department)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            ON DUPLICATE KEY UPDATE first_name=%s, last_name=%s, email=%s, phone=%s, cgpa=%s, graduation_year=%s, department=%s
-        """, (st.session_state.user_id, first_name, last_name, email, phone, cgpa, graduation_year, department, 
-              first_name, last_name, email, phone, cgpa, graduation_year, department))
+            UPDATE Students
+            SET first_name=%s, last_name=%s, email=%s, phone=%s, cgpa=%s, graduation_year=%s, department=%s
+            WHERE user_id=%s
+        """, (first_name, last_name, email, phone, cgpa, graduation_year, department, st.session_state.user_id))
         conn.commit()
         st.success("Profile updated successfully.")
+
 
     cursor.close()
     conn.close()
