@@ -1,4 +1,5 @@
-import mysql.connector
+import pymysql
+from pymysql import MySQLError
 from configdb import DB_CONFIG
 
 TRIGGER_SCRIPT = """
@@ -42,7 +43,7 @@ END;
 """
 
 def create_triggers_and_procedures():
-    conn = mysql.connector.connect(**DB_CONFIG)
+    conn = pymysql.connect(**DB_CONFIG)
     cursor = conn.cursor()
     try:
         cursor.execute("DROP TRIGGER IF EXISTS before_application_insert")
@@ -51,7 +52,7 @@ def create_triggers_and_procedures():
         cursor.execute(STORED_PROC_SCRIPT)
         conn.commit()
         print("Triggers and procedures created.")
-    except mysql.connector.Error as e:
+    except MySQLError as e:
         print(f"Error creating triggers/procedures: {e}")
     finally:
         cursor.close()
