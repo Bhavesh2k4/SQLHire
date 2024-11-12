@@ -1,19 +1,19 @@
-import mysql.connector
+import pymysql
+from pymysql import MySQLError
 from configdb import DB_CONFIG
 import bcrypt
-from mysql.connector import Error
 
 def get_database_connection():
     try:
-        print("Attempting to connect to the database ")
-        conn = mysql.connector.connect(**DB_CONFIG)
-        if conn.is_connected():
+        print("Attempting to connect to the database...")
+        conn = pymysql.connect(**DB_CONFIG)
+        if conn.open:
             print("Connection to the database established successfully.")
             return conn
         else:
             print("Connection to the database failed.")
             return None
-    except Error as e:
+    except MySQLError as e:
         print(f"Error connecting to database: {e}")
         return None
 
@@ -24,9 +24,9 @@ def hash_password(password):
 
 def get_student_email(student_id):
     conn = get_database_connection()
-    cursor = conn.cursor()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
     cursor.execute("SELECT email FROM Students WHERE student_id = %s", (student_id,))
     result = cursor.fetchone()
     cursor.close()
     conn.close()
-    return result[0] if result else None
+    return result["email"] if result else None
