@@ -1,6 +1,9 @@
+import pymysql.cursors
 import streamlit as st
 from db.queries import get_database_connection,hash_password
 from mysql.connector import Error
+import pymysql
+from pymysql import MySQLError
 import pandas as pd
 
 import streamlit as st
@@ -9,7 +12,7 @@ def add_user():
     conn = get_database_connection()
     if conn:
         try:
-            cursor = conn.cursor(dictionary=True)
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
 
             # Capture the role first
             st.subheader("Add User")
@@ -66,20 +69,18 @@ def add_user():
                 conn.commit()
                 st.success(f"User {username} added successfully!")
 
-        except Error as e:
+        except MySQLError as e:
             st.error(f"Error adding user: {e}")
         finally:
             cursor.close()
             conn.close()
-
-# Helper functions like get_database_connection() and hash_password() should be defined here.
 
 
 def delete_user():
     conn = get_database_connection()
     if conn:
         try:
-            cursor = conn.cursor(dictionary=True)
+            cursor = conn.cursor(pymysql.cursors.DictCursor)
             user_id = st.text_input("User ID to delete", value="", key="delete_user_id")
             if st.button("Delete User"):
                 cursor.execute("SELECT role FROM Users WHERE user_id = %s", (user_id,))
@@ -100,7 +101,7 @@ def delete_user():
                 else:
                     st.error("User not found.")
         
-        except Error as e:
+        except MySQLError as e:
             st.error(f"Error deleting user: {e}")
         finally:
             cursor.close()
@@ -109,7 +110,7 @@ def delete_user():
 def view_all_users():
     conn = get_database_connection()
     if conn:
-        cursor = conn.cursor(dictionary=True)
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
         cursor.execute("SELECT * FROM Users")
         users = cursor.fetchall()
         cursor.close()
@@ -124,9 +125,9 @@ def view_all_users():
 
 def view_statistics():
     conn = get_database_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
     
-    # Separate count queries to get accurate totals without cross-joining tables
+
     cursor.execute("""
         SELECT 
             (SELECT COUNT(*) FROM Students) as total_students,
